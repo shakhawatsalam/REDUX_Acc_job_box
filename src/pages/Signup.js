@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import loginImage from "../assets/login.svg";
 import { useForm, useWatch } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { createUser } from "../features/auth/authSlice";
 const Signup = () => {
   const { handleSubmit, register, reset, control } = useForm();
   const password = useWatch({ control, name: "password" });
   const confirmPassword = useWatch({ control, name: "confirmPassword" });
   const navigate = useNavigate();
   const [disabled, setDisabled] = useState(true);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (
@@ -23,8 +26,9 @@ const Signup = () => {
     }
   }, [password, confirmPassword]);
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = ({ email, password }) => {
+    // console.log(data);
+    dispatch(createUser({ email: email, password: password }));
   };
 
   return (
@@ -74,8 +78,7 @@ const Signup = () => {
                 <button
                   type='submit'
                   className='font-bold text-white py-3 rounded-full bg-primary w-full disabled:bg-gray-300 disabled:cursor-not-allowed'
-                  disabled={disabled}
-                >
+                  disabled={disabled}>
                   Sign up
                 </button>
               </div>
@@ -84,8 +87,7 @@ const Signup = () => {
                   Already have an account?{" "}
                   <span
                     className='text-primary hover:underline cursor-pointer'
-                    onClick={() => navigate("/login")}
-                  >
+                    onClick={() => navigate("/login")}>
                     Login
                   </span>
                 </p>
