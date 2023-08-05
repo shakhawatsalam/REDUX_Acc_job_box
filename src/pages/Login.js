@@ -3,13 +3,23 @@ import { useForm } from "react-hook-form";
 
 import { useNavigate } from "react-router-dom";
 import loginImage from "../assets/login.svg";
+import { useDispatch, useSelector } from "react-redux";
+import { logInUser } from "../features/auth/authSlice";
 const Login = () => {
+  const { isLoading, email } = useSelector((state) => state.auth);
   const { register, handleSubmit, reset } = useForm();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = ({ email, password }) => {
+    dispatch(logInUser({ email, password }));
   };
+
+  useEffect(() => {
+    if (!isLoading && email) {
+      navigate("/");
+    }
+  }, [email, isLoading]);
 
   return (
     <div className='flex h-screen items-center'>
@@ -40,8 +50,7 @@ const Login = () => {
               <div className='relative !mt-8'>
                 <button
                   type='submit'
-                  className='font-bold text-white py-3 rounded-full bg-primary w-full'
-                >
+                  className='font-bold text-white py-3 rounded-full bg-primary w-full'>
                   Login
                 </button>
               </div>
@@ -50,8 +59,7 @@ const Login = () => {
                   Don't have an account?{" "}
                   <span
                     className='text-primary hover:underline cursor-pointer'
-                    onClick={() => navigate("/signup")}
-                  >
+                    onClick={() => navigate("/signup")}>
                     Sign up
                   </span>
                 </p>
