@@ -4,8 +4,11 @@ import { useForm, useWatch } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { createUser, googleLogin } from "../features/auth/authSlice";
+import { toast } from "react-hot-toast";
 const Signup = () => {
-    const { isLoading, email, isError, error } = useSelector((state) => state.auth);
+  const { isLoading, email, isError, error } = useSelector(
+    (state) => state.auth
+  );
   const { handleSubmit, register, reset, control } = useForm();
   const password = useWatch({ control, name: "password" });
   const confirmPassword = useWatch({ control, name: "confirmPassword" });
@@ -41,6 +44,12 @@ const Signup = () => {
     // console.log(data);
     dispatch(createUser({ email: email, password: password }));
   };
+
+  useEffect(() => {
+    if (isError && error) {
+      toast.error(error);
+    }
+  }, [isError, error]);
 
   return (
     <div className='flex h-screen items-center pt-14'>
