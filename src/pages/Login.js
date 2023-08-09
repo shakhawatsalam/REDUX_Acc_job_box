@@ -4,9 +4,11 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import loginImage from "../assets/login.svg";
 import { useDispatch, useSelector } from "react-redux";
-import { logInUser } from "../features/auth/authSlice";
+import { googleLogin, logInUser } from "../features/auth/authSlice";
 const Login = () => {
-  const { isLoading, email } = useSelector((state) => state.auth);
+  const { isLoading, email, isError, error } = useSelector(
+    (state) => state.auth
+  );
   const { register, handleSubmit, reset } = useForm();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -14,12 +16,15 @@ const Login = () => {
   const onSubmit = ({ email, password }) => {
     dispatch(logInUser({ email, password }));
   };
+  const hangleGoogleLogin = () => {
+    dispatch(googleLogin());
+  };
 
   useEffect(() => {
     if (!isLoading && email) {
       navigate("/");
     }
-  }, [email, isLoading]);
+  }, [email, isLoading, navigate]);
 
   return (
     <div className='flex h-screen items-center'>
@@ -48,6 +53,9 @@ const Login = () => {
                 />
               </div>
               <div className='relative !mt-8'>
+                {
+                  isError && <span>{error}</span>
+                }
                 <button
                   type='submit'
                   className='font-bold text-white py-3 rounded-full bg-primary w-full'>
@@ -64,6 +72,12 @@ const Login = () => {
                   </span>
                 </p>
               </div>
+              <button
+                onClick={hangleGoogleLogin}
+                type='submit'
+                className='font-bold text-white py-3 rounded-full bg-primary w-full'>
+                Login With Google
+              </button>
             </div>
           </form>
         </div>

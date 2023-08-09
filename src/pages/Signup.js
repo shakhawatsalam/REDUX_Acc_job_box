@@ -2,15 +2,26 @@ import React, { useEffect, useState } from "react";
 import loginImage from "../assets/login.svg";
 import { useForm, useWatch } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { createUser } from "../features/auth/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { createUser, googleLogin } from "../features/auth/authSlice";
 const Signup = () => {
+    const { isLoading, email, isError, error } = useSelector((state) => state.auth);
   const { handleSubmit, register, reset, control } = useForm();
   const password = useWatch({ control, name: "password" });
   const confirmPassword = useWatch({ control, name: "confirmPassword" });
   const navigate = useNavigate();
   const [disabled, setDisabled] = useState(true);
   const dispatch = useDispatch();
+
+  const hangleGoogleLogin = () => {
+    dispatch(googleLogin());
+  };
+
+  useEffect(() => {
+    if (!isLoading && email) {
+      navigate("/");
+    }
+  }, [email, isLoading, navigate]);
 
   useEffect(() => {
     if (
@@ -92,6 +103,12 @@ const Signup = () => {
                   </span>
                 </p>
               </div>
+              <button
+                onClick={hangleGoogleLogin}
+                type='submit'
+                className='font-bold text-white py-3 rounded-full bg-primary w-full'>
+                Login With Google
+              </button>
             </div>
           </form>
         </div>
