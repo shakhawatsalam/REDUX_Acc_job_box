@@ -2,14 +2,23 @@ import React, { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { FaChevronLeft } from "react-icons/fa";
+import { useRegisterMutation } from "../../features/auth/authApi";
+import { useSelector } from "react-redux";
 
 const EmployerRegistration = () => {
+  const {
+    user: { email },
+  } = useSelector((state) => state.auth);
+  const { handleSubmit, register, control } = useForm({
+    defaultValues: {
+      email,
+    },
+  });
   const [countries, setCountries] = useState([]);
-
-  const { handleSubmit, register, control } = useForm();
   const term = useWatch({ control, name: "term" });
   const navigate = useNavigate();
-
+  const [postUser, { isLoading, isError }] = useRegisterMutation();
+  
   const businessCategory = [
     "Automotive",
     "Business Support & Supplies",
@@ -40,23 +49,21 @@ const EmployerRegistration = () => {
   }, []);
 
   const onSubmit = (data) => {
-    console.log(data);
+    postUser({ ...data, role: "employer" });
   };
 
   return (
     <div className='pt-14'>
       <div
         onClick={() => navigate("/register")}
-        className='cursor-pointer w-fit mt-5 flex items-center'
-      >
+        className='cursor-pointer w-fit mt-5 flex items-center'>
         <FaChevronLeft />
         <p>back</p>
       </div>
       <div className='flex justify-center items-center overflow-auto p-10'>
         <form
           className='bg-secondary/20 shadow-lg p-10 rounded-2xl flex flex-wrap gap-3 max-w-3xl justify-between'
-          onSubmit={handleSubmit(onSubmit)}
-        >
+          onSubmit={handleSubmit(onSubmit)}>
           <h1 className='w-full text-2xl text-primary mb-5'>Candidate</h1>
           <div className='flex flex-col w-full max-w-xs'>
             <label className='mb-2' htmlFor='firstName'>
@@ -74,7 +81,12 @@ const EmployerRegistration = () => {
             <label className='mb-2' htmlFor='email'>
               Email
             </label>
-            <input type='email' id='email' disabled {...register("email")} />
+            <input
+              type='email'
+              id='email'
+              disabled
+              {...register("email")}
+            />
           </div>
           <div className='flex flex-col w-full max-w-xs'>
             <h1 className='mb-3'>Gender</h1>
