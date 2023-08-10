@@ -2,9 +2,14 @@ import React from "react";
 
 import meeting from "../assets/meeting.jpg";
 import { BsArrowRightShort, BsArrowReturnRight } from "react-icons/bs";
+import { useParams } from "react-router-dom";
+import { useGetSingleJobQuery } from "../features/job/jobApi";
 const JobDetails = () => {
+  const { id } = useParams();
+  const { data, isLoading, isError } = useGetSingleJobQuery(id);
+  console.log(data?.data)
   const {
-    companyName,
+    // companyName,
     position,
     location,
     experience,
@@ -17,7 +22,7 @@ const JobDetails = () => {
     overview,
     queries,
     _id,
-  } = {};
+  } =  data?.data ;
 
   return (
     <div className='pt-14 grid grid-cols-12 gap-5'>
@@ -49,7 +54,7 @@ const JobDetails = () => {
               Requirements
             </h1>
             <ul>
-              {requirements.map((skill) => (
+              {requirements?.map((skill) => (
                 <li className='flex items-center'>
                   <BsArrowRightShort /> <span>{skill}</span>
                 </li>
@@ -61,7 +66,7 @@ const JobDetails = () => {
               Responsibilities
             </h1>
             <ul>
-              {responsibilities.map((skill) => (
+              {responsibilities?.map((skill) => (
                 <li className='flex items-center'>
                   <BsArrowRightShort /> <span>{skill}</span>
                 </li>
@@ -76,7 +81,7 @@ const JobDetails = () => {
               General Q&A
             </h1>
             <div className='text-primary my-2'>
-              {queries.map(({ question, email, reply, id }) => (
+              {queries?.map(({ question, email, reply, id }) => (
                 <div>
                   <small>{email}</small>
                   <p className='text-lg font-medium'>{question}</p>
@@ -90,8 +95,7 @@ const JobDetails = () => {
                     <input placeholder='Reply' type='text' className='w-full' />
                     <button
                       className='shrink-0 h-14 w-14 bg-primary/10 border border-primary hover:bg-primary rounded-full transition-all  grid place-items-center text-primary hover:text-white'
-                      type='button'
-                    >
+                      type='button'>
                       <BsArrowRightShort size={30} />
                     </button>
                   </div>
@@ -107,14 +111,16 @@ const JobDetails = () => {
               />
               <button
                 className='shrink-0 h-14 w-14 bg-primary/10 border border-primary hover:bg-primary rounded-full transition-all  grid place-items-center text-primary hover:text-white'
-                type='button'
-              >
+                type='button'>
                 <BsArrowRightShort size={30} />
               </button>
             </div>
           </div>
         </div>
       </div>
+
+
+      
       <div className='col-span-3'>
         <div className='rounded-xl bg-primary/10 p-5 text-primary space-y-5'>
           <div>
@@ -140,7 +146,7 @@ const JobDetails = () => {
         </div>
         <div className='mt-5 rounded-xl bg-primary/10 p-5 text-primary space-y-5'>
           <div>
-            <h1 className='font-semibold text-lg'>{companyName}</h1>
+            {/* <h1 className='font-semibold text-lg'>{companyName}</h1> */}
           </div>
           <div>
             <p>Company Size</p>
@@ -166,7 +172,13 @@ const JobDetails = () => {
           </div>
         </div>
       </div>
+
+
+
+
     </div>
+
+
   );
 };
 
