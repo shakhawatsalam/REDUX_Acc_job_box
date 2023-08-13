@@ -4,12 +4,12 @@ import meeting from "../assets/meeting.jpg";
 import { BsArrowRightShort, BsArrowReturnRight } from "react-icons/bs";
 import { useParams } from "react-router-dom";
 import { useGetSingleJobQuery } from "../features/job/jobApi";
+import Loading from "../components/reusable/Loading";
 const JobDetails = () => {
   const { id } = useParams();
   const { data, isLoading, isError } = useGetSingleJobQuery(id);
-  console.log(data?.data)
   const {
-    // companyName,
+    companyName,
     position,
     location,
     experience,
@@ -21,8 +21,28 @@ const JobDetails = () => {
     responsibilities,
     overview,
     queries,
-    _id,
-  } =  data?.data ;
+  } = data?.data ? data?.data : {};
+  if (
+    !data?.data?.companyName &&
+    !data?.data?.position &&
+    !data?.data?.location &&
+    !data?.data?.experience &&
+    !data?.data?.workLevel &&
+    !data?.data?.employmentType &&
+    !data?.data?.salaryRange &&
+    !data?.data?.skills &&
+    !data?.data?.requirements &&
+    !data?.data?.responsibilities &&
+    !data?.data?.overview &&
+    !data?.data?.queries
+  ) {
+    return <Loading></Loading>;
+  }
+
+  const handleApply = () => {
+    const data = {};
+    console.log(data);
+  };
 
   return (
     <div className='pt-14 grid grid-cols-12 gap-5'>
@@ -33,7 +53,9 @@ const JobDetails = () => {
         <div className='space-y-5'>
           <div className='flex justify-between items-center mt-5'>
             <h1 className='text-xl font-semibold text-primary'>{position}</h1>
-            <button className='btn'>Apply</button>
+            <button onClick={handleApply} className='btn'>
+              Apply
+            </button>
           </div>
           <div>
             <h1 className='text-primary text-lg font-medium mb-3'>Overview</h1>
@@ -42,7 +64,7 @@ const JobDetails = () => {
           <div>
             <h1 className='text-primary text-lg font-medium mb-3'>Skills</h1>
             <ul>
-              {skills.map((skill) => (
+              {skills?.map((skill) => (
                 <li className='flex items-center'>
                   <BsArrowRightShort /> <span>{skill}</span>
                 </li>
@@ -119,8 +141,6 @@ const JobDetails = () => {
         </div>
       </div>
 
-
-      
       <div className='col-span-3'>
         <div className='rounded-xl bg-primary/10 p-5 text-primary space-y-5'>
           <div>
@@ -146,7 +166,7 @@ const JobDetails = () => {
         </div>
         <div className='mt-5 rounded-xl bg-primary/10 p-5 text-primary space-y-5'>
           <div>
-            {/* <h1 className='font-semibold text-lg'>{companyName}</h1> */}
+            <h1 className='font-semibold text-lg'>{companyName}</h1>
           </div>
           <div>
             <p>Company Size</p>
@@ -172,13 +192,7 @@ const JobDetails = () => {
           </div>
         </div>
       </div>
-
-
-
-
     </div>
-
-
   );
 };
 
