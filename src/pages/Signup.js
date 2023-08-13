@@ -42,7 +42,9 @@ const Signup = () => {
 
   const onSubmit = ({ email, password }) => {
     // console.log(data);
-    dispatch(createUser({ email: email, password: password }));
+    dispatch(createUser({ email: email, password: password })).then(() => {
+      navigate("/login");
+    });
   };
 
   useEffect(() => {
